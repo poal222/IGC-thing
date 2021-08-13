@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Annotation profile for isdp" enabled="true">
+        <sourceOutputDir name="../target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="isdp-cluster" />
+        <module name="isdp-boot" />
+      </profile>
+      <profile name="Annotation profile for isdp-datasource" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="outputDirectory" value="D:\iot\isdp\isdp-datasource/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="isdp-datasource" />
+      </profile>
+      <profile name="Annotation profile for isdp-cache" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="outputDirectory" value="D:\iot\isdp\isdp-cache/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="isdp-cache" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="isdp" target="1.8" />
+      <module name="isdp-boot" target="14" />
+      <module name="isdp-cache" target="1.8" />
+      <module name="isdp-cluster" target="14" />
+      <module name="isdp-datasource" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="isdp-cache" options="-AoutputDirectory=D:\iot\isdp\isdp-cache/src/main" />
+      <module name="isdp-datasource" options="-AoutputDirectory=D:\iot\isdp\isdp-datasource/src/main" />
+    </option>
+  </component>
+</project>

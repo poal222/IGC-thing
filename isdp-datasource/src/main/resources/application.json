@@ -1,0 +1,29 @@
+{
+  "isdp": {
+    "app_name": "lian",
+    "dev": {
+      "server": {
+        "port": 8088,
+        "contextPath": "/demo"
+      },
+
+      "dataSource": {
+        "enable": true,
+        "type": "Mysql",
+        "port": 3306,
+        "host": "47.110.246.169",
+        "driverClassName": "com.mysql.jdbc.Driver",
+        "jdbcUrl": "jdbc:sqlite:C:\\Users\\王岗\\liandb.db",
+        "username": "root",
+        "password": "rootroot",
+        "db": "liandb",
+        "maximumPoolSize": 8
+      }
+    },
+    "prod": {
+
+    }
+  }
+
+
+}

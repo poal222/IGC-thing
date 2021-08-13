@@ -1,0 +1,12 @@
+= Isdp-cluster
+
+== 目的
+
+为了提供一种快速集群的插拔式组件，主要包括节点心跳获取
+```
+  <dependency>
+    <groupId>org.isdp</groupId>
+    <artifactId>isdp-boot</artifactId>
+    <version>{last.version}</version>
+  </dependency>
+```

@@ -1,0 +1,22 @@
+版本：0.0.2
+新功能：
+ 1、仿照Launcher，增加 命令行功能;
+    命令如下：
+        -cluster 集群模式
+        -conf= 配置文件地址
+        -env= 环境定义 默认定义为dev
+ 2、参照vertx-boot,增加对每个verticle的配置文件配置功能
+    需要在配置文件里，定义好，样例如下：
+        foo {
+          name = "io.github.jponge.vertx.boot.samples.FooVerticle"
+          instances = 4
+        }
+版本：0.0.3
+新功能：
+ 1、增加缓存配置加载功能，样例加载配置文件如下
+      "cache": {
+        "ttl": 200,
+        "name": "org.idsp.vertx.cache.CacheProvider",
+        "type": "local",
+        "enable": true
+      }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>isdp</artifactId>
+    <groupId>org.isdp</groupId>
+    <version>1.0.3-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>isdp-datasource</artifactId>
+
+  <properties>
+    <maven.compiler.source>14</maven.compiler.source>
+    <maven.compiler.target>14</maven.compiler.target>
+  </properties>
+<dependencies>
+  <dependency>
+    <groupId>io.vertx</groupId>
+    <artifactId>vertx-jdbc-client</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>io.vertx</groupId>
+    <artifactId>vertx-mysql-client</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>io.vertx</groupId>
+    <artifactId>vertx-pg-client</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>io.vertx</groupId>
+    <artifactId>vertx-sql-client-templates</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>io.vertx</groupId>
+    <artifactId>vertx-mongo-client</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>org.isdp</groupId>
+    <artifactId>isdp-boot</artifactId>
+    <version>1.0.3-SNAPSHOT</version>
+    <scope>compile</scope>
+  </dependency>
+    <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-codegen</artifactId>
+    </dependency>
+</dependencies>
+</project>
