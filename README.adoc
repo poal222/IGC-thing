@@ -1,0 +1,30 @@
+igc-thing 物联网基础平台
+
+igc-thing 基于Java8,Netty,Vert.x,Reactor等开发, 是一个开箱即用,可二次开发的企业级物联网基础平台。
+平台实现了物联网相关的众多基础功能, 能帮助你快速建立物联网相关业务系统。
+
+核心特性
+支持统一物模型管理,多种设备,多种厂家,统一管理。
+
+统一设备连接管理,多协议适配(TCP,MQTT,UDP,CoAP,HTTP等),屏蔽网络编程复杂性,灵活接入不同厂家不同协议的设备。
+
+灵活的规则引擎,设备告警,消息通知,数据转发.
+
+强大的ReactorQL引擎,使用SQL来处理实时数据.
+
+地理位置:统一管理地理位置信息,支持区域搜索.
+
+
+技术栈
+Netty ,Vert.x 高性能网络编程框架
+ElasticSearch 全文检索，日志，时序数据存储
+PostgreSQL 业务功能数据管理
+
+1、maven 仓库推送 命令如下
+推送命令（建议针对不同的jar包，分别推送）
+
+<code>
+mvn clean install org.apache.maven.plugins:maven-deploy-plugin:2.8:deploy -DskipTests
+</code>
+
+

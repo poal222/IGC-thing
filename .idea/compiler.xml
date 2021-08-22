@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="isdp-cluster" />
+        <module name="isdp-cache" />
+        <module name="isdp-boot" />
+      </profile>
+      <profile name="Annotation profile for isdp-common" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="outputDirectory" value="C:\Users\王岗\IdeaProjects\isdp-vertx\isdp-common/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="isdp-common" />
+      </profile>
+      <profile name="Annotation profile for isdp-tenant" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="outputDirectory" value="C:\Users\王岗\IdeaProjects\isdp-vertx\isdp-tenant/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="isdp-tenant" />
+      </profile>
+      <profile name="Annotation profile for isdp-vertx" enabled="true">
+        <sourceOutputDir name="src/main/generated" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <option name="outputDirectory" value="C:\Users\王岗\IdeaProjects\isdp-vertx\isdp-datasource/src/main" />
+        <processor name="io.vertx.codegen.CodeGenProcessor" />
+        <module name="isdp-datasource" />
+      </profile>
+    </annotationProcessing>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="isdp-boot" options="" />
+      <module name="isdp-cache" options="" />
+      <module name="isdp-cluster" options="" />
+      <module name="isdp-common" options="-AoutputDirectory=C:\Users\王岗\IdeaProjects\isdp-vertx\isdp-common/src/main" />
+      <module name="isdp-datasource" options="-AoutputDirectory=C:\Users\王岗\IdeaProjects\isdp-vertx\isdp-datasource/src/main" />
+      <module name="isdp-tenant" options="-AoutputDirectory=C:\Users\王岗\IdeaProjects\isdp-vertx\isdp-tenant/src/main" />
+    </option>
+  </component>
+</project>

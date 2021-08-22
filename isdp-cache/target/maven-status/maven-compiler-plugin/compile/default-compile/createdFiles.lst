@@ -1,0 +1,6 @@
+org\isdp\vertx\cache\CacheManager.class
+org\isdp\vertx\cache\TestCache.class
+org\isdp\vertx\cache\CacheProvider.class
+org\isdp\vertx\cache\LocalCache.class
+org\isdp\vertx\cache\Cache.class
+org\isdp\vertx\cache\InfinispanCache.class

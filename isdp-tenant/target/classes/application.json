@@ -1,0 +1,45 @@
+{
+  "isdp": {
+    "app_name": "lian",
+    "dev": {
+      "server": {
+        "port": 8088,
+        "contextPath": "/demo"
+      },
+      "vertx": {
+        "eventLoopPoolSize": 2,
+        "workerPoolSize": 20,
+        "blockedThreadCheckInterval": 999999999,
+        "maxEventLoopExecuteTime": 999999999,
+        "maxWorkerExecuteTime": 999999999,
+        "eventBusOptions": {
+          "connectTimeout": 1800000
+        }
+      },
+      "dataSource": {
+        "enable": true,
+        "port": 3306,
+        "host": "47.110.246.169",
+        "username": "root",
+        "password": "rootroot",
+        "database": "isdp_igc",
+        "maximumPoolSize": 8
+      },
+      "tcpServer": {
+        "port": 4321,
+        "ip": "localhost"
+      },
+      "cache": {
+        "ttl": 200,
+        "name": "org.idsp.vertx.cache.CacheProvider",
+        "type": "local",
+        "enable": false
+      }
+    },
+    "prod": {
+
+    }
+  }
+
+
+}

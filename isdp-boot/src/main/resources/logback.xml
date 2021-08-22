@@ -1,0 +1,23 @@
+<!--
+  ~ Copyright (c) 2021. 四川高诚物联网科技有限公司.  All rights reserved.
+  ~ 本软件基于Apache License 2.0
+  ~ 任何单位及个人可以用于修改，分发及商业目的
+  -->
+
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="io.netty" level="warn"/>
+    <logger name="io.vertx" level="info"/>
+    <logger name="org.isdp.vertx.boot" level="info"/>
+
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>
