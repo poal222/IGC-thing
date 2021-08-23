@@ -7,9 +7,36 @@
 package org.isdp.vertx.common.cmd;
 
 
-import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Vertx;
+import io.vertx.ext.web.Router;
 
-public class BaseCmd extends AbstractVerticle implements IsdpResponseWrapper{
+public abstract class BaseCmd {
+
+    private Vertx vertx   ;
+
+    private Router router ;
+
+
+    public void setVertx(Vertx vertx) {
+        this.vertx = vertx;
+    }
+
+    public void setRouter(Router router) {
+        this.router = router;
+    }
+
+    public Router getRouter() {
+        return router;
+    }
+
+    public Vertx getVertx() {
+        return vertx;
+    }
+
+    protected abstract void initCmd(Vertx vertx, Router router);
+
+
+
 
 
 

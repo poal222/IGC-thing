@@ -1,39 +1,40 @@
 package org.isdp.vertx.tenant.cmd;
 
-import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
-import org.isdp.vertx.boot.annotation.DeployVerticle;
-import org.isdp.vertx.boot.boot.IsdpApplication;
+import io.vertx.ext.web.Router;
+import io.vertx.sqlclient.templates.RowMapper;
 import org.isdp.vertx.common.cmd.CrudCmd;
-import org.isdp.vertx.common.cmd.WebCmd;
-import org.isdp.vertx.tenant.model.Tenant;
+import org.isdp.vertx.common.service.CrudService;
 import org.isdp.vertx.tenant.model.TenantRowMapper;
 import org.isdp.vertx.tenant.service.TenantService;
 
-@DeployVerticle(name = "tenant")
 public class TenantCmd extends CrudCmd {
-
-    TenantService<Tenant> tenantTenantService = null;
-    @Override
-    public void start(Promise startPromise) throws Exception {
-        super.start(startPromise);
-//
-        tenantTenantService = TenantService.create();
-        setRowMapper(TenantRowMapper.INSTANCE);
-        // 加载service
-        setCrudService(tenantTenantService);
-//        tag [1:注册 其它路由]
-        UsersCmd.create(Vertx.vertx(),router).init(); ;
-        //启动应用即可
-        createHttpServer(router);
+    private TenantCmd(Vertx vertx, Router router) {
+        initCmd( vertx,  router);
     }
 
-//    private void addWebCmd(WebCmd webCmd) {
-//
-//    }
-//
-//    public static void main(String[] args) {
-//        IsdpApplication isdpApplication = new IsdpApplication();
-//        isdpApplication.Run(TenantCmd.class, Vertx.vertx());
-//    }
+    @Override
+    public CrudService getCrudService() {
+        return TenantService.create();
+    }
+
+    @Override
+    public RowMapper getRowMapper() {
+        return TenantRowMapper.INSTANCE;
+    }
+
+    @Override
+    public String getRoutePath() {
+        return "/isdp/saas/tenant";
+    }
+
+
+
+    public static  TenantCmd createTenant(Vertx vertx, Router router){
+
+        return new TenantCmd(vertx,router);
+
+    }
+
+
 }

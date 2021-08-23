@@ -3,37 +3,48 @@ package org.isdp.vertx.tenant.cmd;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.sqlclient.templates.RowMapper;
+import org.isdp.vertx.common.cmd.CrudCmd;
 import org.isdp.vertx.common.cmd.WebCmd;
+import org.isdp.vertx.common.service.CrudService;
+import org.isdp.vertx.tenant.model.TenantRowMapper;
+import org.isdp.vertx.tenant.service.TenantService;
 import org.isdp.vertx.tenant.service.UsersService;
 
 /**
- * 通过init方式注册加载
  */
-public class UsersCmd<T> extends WebCmd<T> {
-    /**  service服务加载区域 **/
-    private UsersService usersService;
-
-
-
+public class UsersCmd extends CrudCmd {
 
     private UsersCmd(Vertx vertx, Router router) {
-        super(vertx,router);
-        setWebRoot("/isdp/user");
-        usersService= UsersService.create();
+        initCmd( vertx,  router);
     }
 
-    public static UsersCmd create(Vertx vertx,Router router){
-        UsersCmd usersCmd = new UsersCmd(vertx,router);
-        return usersCmd;
+    @Override
+    public CrudService getCrudService() {
+        return UsersService.create();
     }
 
-    public void init(){
-        //定义 路由区域
-        getRouter().post(getWebRoot()+"/ceshi").handler(routingContext->{
-            routingContext.response().setStatusCode(200).end("this.sds");
-        });
-
+    @Override
+    public RowMapper getRowMapper() {
+        return TenantRowMapper.INSTANCE;
     }
 
+    @Override
+    public String getRoutePath() {
+        return "/isdp/saas/user";
+    }
+
+    /**
+     * 总入口
+     * @param vertx
+     * @param router
+     * @return
+     */
+
+    public static UsersCmd create(Vertx vertx, Router router){
+
+        return new UsersCmd(vertx,router);
+
+    }
 
 }
