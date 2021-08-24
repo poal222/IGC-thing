@@ -17,6 +17,8 @@
     <file url="file://$PROJECT_DIR$/isdp-datasource" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/isdp-datasource/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/isdp-datasource/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/isdp-mqtt/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/isdp-mqtt/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/isdp-tenant" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/isdp-tenant/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/isdp-tenant/src/main/resources" charset="UTF-8" />

@@ -1,0 +1,17 @@
+isdp-mqtt 服务提供者
+
+## 1、mqtt协议提供
+提供mqtt协议，实现 上行和下行操作
+
+## 2、基础环境
+默认mqtt协议端口：1883
+默认用户名：mqttroot
+
+默认密码：mqttpassword
+
+## 3、基础配置
+keyPath 密钥路径
+
+certPath 证书路径
+
+SSLEnabled 是否启用ssl证书，默认不启用

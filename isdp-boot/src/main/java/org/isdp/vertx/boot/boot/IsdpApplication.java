@@ -119,7 +119,7 @@ public class IsdpApplication {
     jsonObjectFuture.onSuccess(config->{
       // tag::[0:全局加载配置文件]
       isdpCurrentConfig = config.getJsonObject("isdp",new JsonObject()).getJsonObject(applicationPropertise.getEnv(),new JsonObject());
-
+      ApplicationContext.APPLICAION_CONFIG = isdpCurrentConfig;
       //    1、 加载配置组件
       ConfigurationLoader configurationLoader = new ConfigurationLoader();
 //    2、加载启动模式verticle
