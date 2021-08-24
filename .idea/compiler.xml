@@ -6,16 +6,16 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="isdp-cache" />
         <module name="isdp-cluster" />
-        <module name="isdp-boot" />
         <module name="main" />
+        <module name="isdp-cache" />
+        <module name="isdp-boot" />
       </profile>
       <profile name="Annotation profile for isdp-common" enabled="true">
         <sourceOutputDir name="src/main/generated" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <option name="outputDirectory" value="$PROJECT_DIR$/isdp-common/src/main" />
+        <option name="outputDirectory" value="C:\Users\王岗\IdeaProjects\isdp-vertx\isdp-common/src/main" />
         <processor name="io.vertx.codegen.CodeGenProcessor" />
         <module name="isdp-common" />
       </profile>
@@ -23,7 +23,7 @@
         <sourceOutputDir name="src/main/generated" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <option name="outputDirectory" value="$PROJECT_DIR$/isdp-tenant/src/main" />
+        <option name="outputDirectory" value="C:\Users\王岗\IdeaProjects\isdp-vertx\isdp-tenant/src/main" />
         <processor name="io.vertx.codegen.CodeGenProcessor" />
         <module name="isdp-tenant" />
       </profile>
@@ -31,7 +31,7 @@
         <sourceOutputDir name="src/main/generated" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <option name="outputDirectory" value="$PROJECT_DIR$/isdp-datasource/src/main" />
+        <option name="outputDirectory" value="C:\Users\王岗\IdeaProjects\isdp-vertx\isdp-datasource/src/main" />
         <processor name="io.vertx.codegen.CodeGenProcessor" />
         <module name="isdp-datasource" />
       </profile>
@@ -42,9 +42,9 @@
       <module name="isdp-boot" options="" />
       <module name="isdp-cache" options="" />
       <module name="isdp-cluster" options="" />
-      <module name="isdp-common" options="-AoutputDirectory=$PROJECT_DIR$/isdp-common/src/main" />
-      <module name="isdp-datasource" options="-AoutputDirectory=$PROJECT_DIR$/isdp-datasource/src/main" />
-      <module name="isdp-tenant" options="-AoutputDirectory=$PROJECT_DIR$/isdp-tenant/src/main" />
+      <module name="isdp-common" options="-AoutputDirectory=C:\Users\王岗\IdeaProjects\isdp-vertx\isdp-common/src/main" />
+      <module name="isdp-datasource" options="-AoutputDirectory=C:\Users\王岗\IdeaProjects\isdp-vertx\isdp-datasource/src/main" />
+      <module name="isdp-tenant" options="-AoutputDirectory=C:\Users\王岗\IdeaProjects\isdp-vertx\isdp-tenant/src/main" />
     </option>
   </component>
 </project>

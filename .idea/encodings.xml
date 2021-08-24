@@ -7,10 +7,13 @@
     <file url="file://$PROJECT_DIR$/isdp-boot/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/isdp-cache" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/isdp-cache/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/isdp-cache/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/isdp-cluster" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/isdp-cluster/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/isdp-cluster/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/isdp-common" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/isdp-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/isdp-common/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/isdp-datasource" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/isdp-datasource/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/isdp-datasource/src/main/resources" charset="UTF-8" />

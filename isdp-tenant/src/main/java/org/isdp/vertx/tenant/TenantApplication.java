@@ -10,7 +10,6 @@ import org.isdp.vertx.boot.boot.IsdpApplication;
 import org.isdp.vertx.tenant.cmd.AuthCmd;
 import org.isdp.vertx.tenant.cmd.TenantCmd;
 import org.isdp.vertx.tenant.cmd.UsersCmd;
-import org.isdp.vertx.tenant.model.Tenant;
 
 
 @Application(scanPackages = {"org.isdp.vertx.tenant"})
