@@ -105,9 +105,9 @@ public class PackageUtil {
       } else {
         String childFilePath = childFile.getPath();
         if (childFilePath.endsWith(".class")) {
-          childFilePath = childFilePath.substring(childFilePath.indexOf("\\classes") + 9,
+          childFilePath = childFilePath.substring(childFilePath.indexOf("/classes/") + 9,
                   childFilePath.lastIndexOf("."));
-          childFilePath = childFilePath.replace("\\", ".");
+          childFilePath = childFilePath.replace("/", ".");
           myClassName.add(childFilePath);
         }
       }

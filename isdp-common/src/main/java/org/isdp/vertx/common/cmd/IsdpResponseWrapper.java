@@ -57,7 +57,7 @@ public interface IsdpResponseWrapper {
                 .end(isdpResponses.toJson().put("data",data).encodePrettily());
     }
     default void successfulled(RoutingContext routingContext, String  message) {
-        successfulled(routingContext,"Success",new JsonObject());
+        successfulled(routingContext,"Success",message);
     }
     default void successfulled(RoutingContext routingContext, Pager pager) {
         successfulled(routingContext,"Success",pager.toJson());
