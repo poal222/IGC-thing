@@ -15,6 +15,7 @@
     <module>isdp-common</module>
       <module>isdp-tenant</module>
       <module>isdp-mqtt</module>
+      <module>isdp-gateway</module>
   </modules>
   <packaging>pom</packaging>
   <name>isdp-vertx</name>

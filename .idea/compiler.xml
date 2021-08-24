@@ -10,6 +10,7 @@
         <module name="isdp-cluster" />
         <module name="main" />
         <module name="isdp-cache" />
+        <module name="isdp-gateway" />
         <module name="isdp-boot" />
       </profile>
       <profile name="Annotation profile for isdp-common" enabled="true">
