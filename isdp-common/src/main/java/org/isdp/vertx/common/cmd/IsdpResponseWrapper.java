@@ -34,6 +34,19 @@ public interface IsdpResponseWrapper {
                 .end(isdpResponses.toJson().encodePrettily());
     }
     // 发送信息
+    default void Unauthorized(RoutingContext routingContext, Throwable throwable) {
+        IsdpResponses isdpResponses = new IsdpResponses();
+        isdpResponses.setSuccess(true);
+        isdpResponses.setHost(routingContext.request().host());
+        isdpResponses.setErrorCode("401");
+        isdpResponses.setShowType("2");
+        isdpResponses.setErrorMessage(throwable.getMessage());
+
+        routingContext.response()
+                .setStatusCode(400)
+                .end(isdpResponses.toJson().encodePrettily());
+    }
+    // 发送信息
     default void error(RoutingContext routingContext, Throwable throwable) {
         IsdpResponses isdpResponses = new IsdpResponses();
         isdpResponses.setSuccess(true);

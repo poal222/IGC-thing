@@ -23,9 +23,9 @@ import java.util.jar.JarFile;
 public class PackageUtil {
 
   public static void main(String[] args) throws Exception {
-    String packageName = "org.isdp.vertx.tenant";
+    String packageName = "org.isdp.vertx";
     // List<String> classNames = getClassName(packageName);
-    List<String> classNames = getClassName(packageName, false);
+    List<String> classNames = getClassName(packageName, true);
     if (classNames != null) {
       for (String className : classNames) {
         System.out.println(className);
@@ -105,11 +105,11 @@ public class PackageUtil {
       } else {
         String childFilePath = childFile.getPath();
         if (childFilePath.endsWith(".class")) {
-//          childFilePath = childFilePath.substring(childFilePath.indexOf("/classes/") + 9,
-//                  childFilePath.lastIndexOf("."));
-//          childFilePath = childFilePath.replace("/", ".");
-          childFilePath = childFilePath.substring(childFilePath.indexOf("\\classes") + 9, childFilePath.lastIndexOf("."));
-          childFilePath = childFilePath.replace("\\", ".");
+          childFilePath = childFilePath.substring(childFilePath.indexOf("/classes/") + 9,
+                  childFilePath.lastIndexOf("."));
+          childFilePath = childFilePath.replace("/", ".");
+//          childFilePath = childFilePath.substring(childFilePath.indexOf("/classes/") + 9, childFilePath.lastIndexOf("."));
+//          childFilePath = childFilePath.replace("\\", ".");
           myClassName.add(childFilePath);
         }
       }

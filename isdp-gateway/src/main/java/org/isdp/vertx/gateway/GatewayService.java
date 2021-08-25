@@ -7,12 +7,16 @@ import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientResponse;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.auth.jwt.JWTAuth;
+import io.vertx.ext.auth.jwt.JWTAuthOptions;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.client.HttpRequest;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.HttpException;
+import io.vertx.ext.web.handler.JWTAuthHandler;
 import io.vertx.servicediscovery.Record;
 import io.vertx.servicediscovery.ServiceDiscovery;
 import io.vertx.servicediscovery.ServiceDiscoveryOptions;
@@ -53,9 +57,17 @@ public class GatewayService implements IsdpResponseWrapper {
     public void httpEndpoints(Vertx vertx, Router router) {
         // 配置针对http请求的网关处理器
         router.route().handler(BodyHandler.create());
+
+        // 添加jwt认证校验
+        //        3、对符合要求的路径加jwt校验
+        JWTAuth jwt= JWTAuth.create(vertx, new JWTAuthOptions());
+//        router.route(apiVersion+"/*").handler(JWTAuthHandler.create(jwt));
+//        router.route(apiVersion+"/*").handler(this::initNotAuth);
+
         router.route(apiVersion+"/*").handler(this::serviceHandler);
         // 注册指标Handler
         router.get("/hystrix-metrics").handler(HystrixMetricHandler.create(vertx));
+
     }
 
     private void serviceHandler(RoutingContext routingContext) {
@@ -118,7 +130,7 @@ public class GatewayService implements IsdpResponseWrapper {
                 }).onComplete(ar -> {
                     // 处理结果.
                     if(ar.failed()){
-                        ar.cause().printStackTrace();
+                        System.out.println("sss"); ar.cause().printStackTrace();
                     }
                     if(ar.succeeded()){
                         logger.info(ar.result().toString());
@@ -133,12 +145,15 @@ public class GatewayService implements IsdpResponseWrapper {
     }
 
     private void dispachHttpClientSuccess(RoutingContext routingContext, HttpResponse<Buffer> httpResponse) {
+        if (httpResponse.statusCode() == 401)
+            Unauthorized(routingContext, new RuntimeException(httpResponse.statusMessage()));
         if (httpResponse.statusCode() == 400)
             error(routingContext, new RuntimeException(httpResponse.statusMessage()));
         if (httpResponse.statusCode() == 500)
             error(routingContext, new RuntimeException(httpResponse.statusMessage()));
         if (httpResponse.statusCode() == 200)
-            successfulled(routingContext, httpResponse.bodyAsString());
+
+            successfulled(routingContext, httpResponse.bodyAsJsonObject().getValue("data"));
     }
 
     /**
@@ -147,6 +162,20 @@ public class GatewayService implements IsdpResponseWrapper {
      * @param serviceEnum
      */
     public void dispacheService(ServiceEnum serviceEnum) {
+
+    }
+
+    private void initNotAuth(RoutingContext ctx){
+        // 配置未认证请求
+//        String token = ctx.user().principal().getString("token");
+//        校验token
+        // 这里的值为true
+        boolean isAuthenticated = ctx.user() != null;
+        if(isAuthenticated){
+            ctx.next();
+        }else{
+            error(ctx,new RuntimeException("未认证"));
+        }
 
     }
 }

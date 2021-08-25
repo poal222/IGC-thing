@@ -79,9 +79,7 @@ public class AuthCmd implements WebCmd , IsdpResponseWrapper {
 
 
 
-        //        3、对符合要求的路径加jwt校验
-        router.route("/isdp/saas/tenant/*").handler(JWTAuthHandler.create(jwt));
-        router.route("/isdp/saas/tenant/*").handler(this::initNotAuth);
+
 
     }
 
@@ -139,19 +137,7 @@ public class AuthCmd implements WebCmd , IsdpResponseWrapper {
         successfulled(routingContext,jsonObject);
     }
 
-    private void initNotAuth(RoutingContext ctx){
-        // 配置未认证请求
-//        String token = ctx.user().principal().getString("token");
-//        校验token
-        // 这里的值为true
-        boolean isAuthenticated = ctx.user() != null;
-        if(isAuthenticated){
-            ctx.next();
-        }else{
-            error(ctx,new RuntimeException("未认证"));
-        }
 
-    }
 
 //    private void initSession(RoutingContext routingContext, User user) {
 //        SessionStore isdpStore = null;

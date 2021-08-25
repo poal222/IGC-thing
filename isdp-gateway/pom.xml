@@ -50,5 +50,17 @@
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.isdp</groupId>
+            <artifactId>isdp-boot</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-auth-jwt</artifactId>
+            <version>4.1.2</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>
