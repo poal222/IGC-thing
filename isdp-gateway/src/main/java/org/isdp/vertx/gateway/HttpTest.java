@@ -34,7 +34,7 @@ public class HttpTest extends AbstractVerticle {
         router.route().handler(s->{
             System.out.println("sdsdsdsd");
             System.out.println(s.request());
-            s.response().setStatusCode(400).end("ceshi wanchenbg");
+            s.response().setStatusCode(200).end("ceshi wanchenbg");
         });
         vertx.createHttpServer().requestHandler(router)
                 .listen(8081);
