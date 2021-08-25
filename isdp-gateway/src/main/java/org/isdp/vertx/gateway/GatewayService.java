@@ -1,10 +1,12 @@
 package org.isdp.vertx.gateway;
 
+import io.vertx.circuitbreaker.HystrixMetricHandler;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientResponse;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.client.HttpRequest;
@@ -13,28 +15,47 @@ import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.servicediscovery.Record;
 import io.vertx.servicediscovery.ServiceDiscovery;
+import io.vertx.servicediscovery.ServiceDiscoveryOptions;
 import io.vertx.servicediscovery.ServiceReference;
 import org.isdp.vertx.common.cmd.IsdpResponseWrapper;
 import org.isdp.vertx.gateway.circuit.CircuitBreakerHandler;
 import org.isdp.vertx.gateway.enmu.ServiceEnum;
 import org.isdp.vertx.gateway.enmu.ServiceRegister;
 import org.isdp.vertx.gateway.httpendpoiot.HttpEndpointOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GatewayService implements IsdpResponseWrapper {
+
+
+    private Logger logger = LoggerFactory.getLogger(GatewayService.class);
     private CircuitBreakerHandler circuitBreakerHandler;
     private Vertx vertx;
+
+    private String apiVersion = "/v1";
+
+
+
+    public static GatewayService create(Vertx vertx,Router router){
+        return  new GatewayService(vertx,router);
+    }
+
+    public GatewayService(Vertx vertx,Router router) {
+        this.vertx = vertx;
+
+        circuitBreakerHandler = CircuitBreakerHandler.getInstance("gateway-circuit-breaker", vertx);
+        httpEndpoints(vertx, router);
+    }
 
     /**
      * 接受服务总入口
      */
     public void httpEndpoints(Vertx vertx, Router router) {
-        circuitBreakerHandler = CircuitBreakerHandler.getInstance("gateway-circuit-breaker", vertx);
-        this.vertx = vertx;
         // 配置针对http请求的网关处理器
         router.route().handler(BodyHandler.create());
-        router.route().handler(this::serviceHandler);
-
-
+        router.route(apiVersion+"/*").handler(this::serviceHandler);
+        // 注册指标Handler
+        router.get("/hystrix-metrics").handler(HystrixMetricHandler.create(vertx));
     }
 
     private void serviceHandler(RoutingContext routingContext) {
@@ -56,19 +77,19 @@ public class GatewayService implements IsdpResponseWrapper {
         String[] uris = httpEndpointOptions.getUri().split("/");
 
 
-        String gatewayName = uris[1];
-        /**
-         * 通过微服务发现，获取服务
-         */
-        ServiceDiscovery discovery = ServiceDiscovery.create(vertx);
+        String gatewayName = uris[2];
 
 
-        Record record = ServiceRegister.findRecord(gatewayName);
+        ServiceRegister.discovery.getRecord(record1 -> gatewayName.equalsIgnoreCase(record1.getName()))
+                .onSuccess(rs-> this.excuteHttpClient(rs,httpEndpointOptions,gatewayName,routingContext))
+                .onFailure(rs->error(routingContext,rs));
+    }
 
-        ServiceReference httpclientServiceReference = discovery.getReference(record);
+    private void excuteHttpClient(Record record,HttpEndpointOptions httpEndpointOptions,String gatewayName,RoutingContext routingContext) {
+        ServiceReference httpclientServiceReference = ServiceRegister.discovery.getReference(record);
         // 获取 需要代理的httpclient元数据
 //        HttpClient client = httpclientServiceReference.getAs(HttpClient.class);
-        String uri = httpEndpointOptions.getUri().substring(gatewayName.length() + 1);
+        String uri = httpEndpointOptions.getUri().substring(apiVersion.length()+gatewayName.length() + 1);
         // 获取服务对象
         WebClient client = httpclientServiceReference.getAs(WebClient.class);
         circuitBreakerHandler.getBreaker()
@@ -80,11 +101,11 @@ public class GatewayService implements IsdpResponseWrapper {
                     HttpRequest<Buffer> httpRequest =  client.request(httpEndpointOptions.getMethod(), uri);
                     httpRequest.putHeaders(httpEndpointOptions.getHeaders());
                     Future<HttpResponse<Buffer>>  httpResponseFuture = null;
-                            if(routingContext.getBodyAsJson()!=null){
-                                httpResponseFuture=  httpRequest.sendBuffer(routingContext.getBodyAsJson().toBuffer());
-                            }else{
-                                httpResponseFuture=httpRequest.send();
-                            }
+                    if(routingContext.getBodyAsJson()!=null){
+                        httpResponseFuture=  httpRequest.sendBuffer(routingContext.getBodyAsJson().toBuffer());
+                    }else{
+                        httpResponseFuture=httpRequest.send();
+                    }
                     httpResponseFuture.onSuccess(httpResponse->dispachHttpClientSuccess(routingContext,httpResponse));
 
                     httpResponseFuture.onFailure(httpResponse->dispachHttpClientError(routingContext,httpResponse));
@@ -100,11 +121,10 @@ public class GatewayService implements IsdpResponseWrapper {
                         ar.cause().printStackTrace();
                     }
                     if(ar.succeeded()){
-                        System.out.println(ar.result());
+                        logger.info(ar.result().toString());
                     }
 
                 });
-
     }
 
     private void dispachHttpClientError(RoutingContext routingContext, Throwable throwable) {

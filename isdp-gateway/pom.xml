@@ -38,6 +38,12 @@
             <artifactId>vertx-circuit-breaker</artifactId>
             <version>${vertx.version}</version>
         </dependency>
+<!--        使用 Redis 存储后端-->
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-service-discovery-backend-redis</artifactId>
+            <version>${vertx.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.isdp</groupId>
             <artifactId>isdp-common</artifactId>
