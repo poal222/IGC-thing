@@ -37,7 +37,7 @@ public class HttpEndpointOptions {
         this.path = request.path();
         this.headers = request.headers();
         this.params = request.params();
-        this.body = request.body();
+//        this.body = request.body();
     }
 
     public HttpMethod getMethod() {
