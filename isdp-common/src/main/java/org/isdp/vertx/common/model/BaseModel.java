@@ -7,6 +7,13 @@ import java.util.Date;
 
 public abstract class  BaseModel<Pk> {
 
+
+    /**
+     * 租户ID
+     */
+    @Column(name = "tenant_id")
+    private String tenantId;
+
     @Column(name = "id")
     public Pk Id;
 

@@ -15,6 +15,7 @@ import org.isdp.vertx.boot.boot.IsdpApplication;
 import org.isdp.vertx.gateway.enmu.ServiceRegister;
 import org.isdp.vertx.gateway.verticle.MicroVerticle;
 import org.isdp.vertx.tenant.cmd.AuthCmd;
+import org.isdp.vertx.tenant.cmd.DicCmd;
 import org.isdp.vertx.tenant.cmd.TenantCmd;
 import org.isdp.vertx.tenant.cmd.UsersCmd;
 import org.slf4j.Logger;
@@ -41,7 +42,7 @@ public class TenantApplication extends AbstractVerticle implements MicroVerticle
         AuthCmd.create(vertx, router);
         TenantCmd.createTenant(vertx, router);
         UsersCmd.create(vertx, router);
-
+        DicCmd.create(vertx, router);
 
         ServiceDiscovery discovery=  ServiceDiscovery.create(vertx, new ServiceDiscoveryOptions()
                 .setBackendConfiguration(
