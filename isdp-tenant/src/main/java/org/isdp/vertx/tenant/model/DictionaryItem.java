@@ -12,7 +12,6 @@ import org.isdp.vertx.common.model.BaseModel;
  */
 @DataObject(generateConverter = true)
 @RowMapped
-
 public class DictionaryItem extends BaseModel<String> {
 
     /**
@@ -47,10 +46,59 @@ public class DictionaryItem extends BaseModel<String> {
      */
     @Column(name = "seq")
     private Integer seq;
-    
+
+    public String getDicID() {
+        return DicID;
+    }
+
+    public void setDicID(String dicID) {
+        DicID = dicID;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getParentID() {
+        return parentID;
+    }
+
+    public void setParentID(String parentID) {
+        this.parentID = parentID;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public Integer getSeq() {
+        return seq;
+    }
+
+    public void setSeq(Integer seq) {
+        this.seq = seq;
+    }
 
     @Override
     public JsonObject toJson() {
-        return null;
+        JsonObject jsonObject = new JsonObject();
+        DictionaryItemConverter.toJson(this,jsonObject);
+        return jsonObject;
     }
 }

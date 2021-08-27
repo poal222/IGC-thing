@@ -7,6 +7,7 @@ org\isdp\vertx\boot\datasource\DatasourceConfig.class
 org\isdp\vertx\boot\boot\IsdpApplication.class
 org\isdp\vertx\boot\annotation\ConfigurationProperties.class
 org\isdp\vertx\boot\boot\ConfigurationLoader.class
+org\isdp\vertx\boot\boot\ApplicationContext.class
 org\isdp\vertx\boot\cache\CacheConfig.class
 org\isdp\vertx\boot\annotation\IsdpConfiguration.class
 org\isdp\vertx\boot\boot\AppMode.class

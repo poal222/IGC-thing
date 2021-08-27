@@ -1,0 +1,15 @@
+GET http://localhost:8080/v1/isdp-auth/isdp/saas/dic/_queryWithTree/12
+Content-Type: application/json
+
+{}
+
+###
+POST http://localhost:8080/v1/isdp-auth/isdp/saas/dic/_insert
+Content-Type: application/json
+
+{
+  "code": "12",
+  "name": "测试",
+  "seq": 1,
+  "tenant_id": "saas"
+}

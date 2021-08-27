@@ -6,8 +6,6 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.sqlclient.templates.RowMapper;
 import org.isdp.vertx.common.cmd.CrudCmd;
 import org.isdp.vertx.common.service.CrudService;
-import org.isdp.vertx.tenant.model.DictionaryRowMapper;
-import org.isdp.vertx.tenant.model.TenantRowMapper;
 import org.isdp.vertx.tenant.service.DicService;
 
 /**
@@ -20,15 +18,20 @@ public class DicCmd extends CrudCmd {
     private DicCmd(Vertx vertx, Router router) {
         dicService =    DicService.create();
         // 加载特殊的api
-        router.post(getRoutePath()+"/_queryWithTree").handler(this::queryWithTree);
+        router.get(getRoutePath()+"/_queryWithTree/:itemId").handler(this::queryWithTree);
         initCmd( vertx,  router);
     }
 
     private void queryWithTree(RoutingContext routingContext) {
-        dicService.dictionaryDao.getDictionaryItemWithTree("12")
+        String itemId = routingContext.pathParam("itemId");
+        if(itemId == null)error(routingContext,new RuntimeException("itemId is not null!"));
+        dicService.dictionaryDao.getDictionaryItemWithTree(itemId)
                 .onSuccess(list->{
-                    routingContext.response().end(list.toString());
-                });
+                    System.out.println(list);
+                    successfulled(routingContext,list);
+                })
+                .onFailure(ex -> ex.printStackTrace())
+        ;
     }
 
     @Override
@@ -38,7 +41,7 @@ public class DicCmd extends CrudCmd {
 
     @Override
     public RowMapper getRowMapper() {
-        return DictionaryRowMapper.INSTANCE;
+        return null;
     }
 
     @Override

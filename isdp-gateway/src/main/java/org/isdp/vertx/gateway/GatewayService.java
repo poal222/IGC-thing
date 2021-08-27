@@ -57,6 +57,8 @@ public class GatewayService implements IsdpResponseWrapper {
     public void httpEndpoints(Vertx vertx, Router router) {
         // 配置针对http请求的网关处理器
         router.route().handler(BodyHandler.create());
+        //拦截所有请求，实现异步日志等操作
+        router.route().handler(this::logAllQequest);
 
         // 添加jwt认证校验
         //        3、对符合要求的路径加jwt校验
@@ -68,6 +70,11 @@ public class GatewayService implements IsdpResponseWrapper {
         // 注册指标Handler
         router.get("/hystrix-metrics").handler(HystrixMetricHandler.create(vertx));
 
+    }
+
+    private void logAllQequest(RoutingContext routingContext) {
+        logger.info("current quest is {}",routingContext.request().uri());
+        routingContext.next();
     }
 
     private void serviceHandler(RoutingContext routingContext) {

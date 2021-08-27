@@ -9,6 +9,7 @@ import org.isdp.vertx.common.model.BaseModel;
 import org.isdp.vertx.common.service.CrudService;
 import org.isdp.vertx.datasource.ddl.Pager;
 
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -80,9 +81,11 @@ public interface CrudCmdWrapper<T extends CrudService, R extends RowMapper> exte
         jsonObject.stream().forEach(stringObjectEntry -> {
             map.put(stringObjectEntry.getKey(), stringObjectEntry.getValue());
         });
+
+
         map.put("id", UUID.randomUUID().hashCode());
-        map.put("createTime", System.currentTimeMillis());
-        map.put("updateTime", System.currentTimeMillis());
+        map.put("createTime",  new java.sql.Date(System.currentTimeMillis()));
+        map.put("updateTime", new java.sql.Date(System.currentTimeMillis()));
         getCrudService().insert(map).onSuccess(ex -> successfulled(routingContext, "success"))
                 .onFailure(ex -> error(routingContext, (Throwable) ex));
 

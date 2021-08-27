@@ -16,6 +16,21 @@ public class DictionaryConverter {
   public static void fromJson(Iterable<java.util.Map.Entry<String, Object>> json, Dictionary obj) {
     for (java.util.Map.Entry<String, Object> member : json) {
       switch (member.getKey()) {
+        case "code":
+          if (member.getValue() instanceof String) {
+            obj.setCode((String)member.getValue());
+          }
+          break;
+        case "name":
+          if (member.getValue() instanceof String) {
+            obj.setName((String)member.getValue());
+          }
+          break;
+        case "seq":
+          if (member.getValue() instanceof Number) {
+            obj.setSeq(((Number)member.getValue()).intValue());
+          }
+          break;
       }
     }
   }
@@ -25,5 +40,14 @@ public class DictionaryConverter {
   }
 
   public static void toJson(Dictionary obj, java.util.Map<String, Object> json) {
+    if (obj.getCode() != null) {
+      json.put("code", obj.getCode());
+    }
+    if (obj.getName() != null) {
+      json.put("name", obj.getName());
+    }
+    if (obj.getSeq() != null) {
+      json.put("seq", obj.getSeq());
+    }
   }
 }

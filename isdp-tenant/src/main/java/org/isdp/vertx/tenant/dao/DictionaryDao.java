@@ -2,6 +2,7 @@ package org.isdp.vertx.tenant.dao;
 
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import io.vertx.core.json.JsonObject;
 import io.vertx.sqlclient.SqlClient;
 import io.vertx.sqlclient.templates.SqlTemplate;
 import org.isdp.vertx.common.dao.CrudDao;
@@ -36,14 +37,15 @@ public class DictionaryDao  extends CrudDao<Tenant> {
      */
     public Future<List<DictionaryItem>> getTopDictionaryItem(String dicId){
         Promise promise = Promise.promise();
-        List<DictionaryItem> dictionaryItemList = new ArrayList<>();
-        SqlTemplate.forQuery(sqlClient,"SELECT * FROM Dictionary_Item where dic_id =#{dicId}" +
+        List<JsonObject> dictionaryItemList = new ArrayList<>();
+        SqlTemplate.forQuery(sqlClient,"SELECT * FROM pub_dic_item where dic_id =#{dicId}" +
                 " and parentID='#' " )
                 .mapTo(DictionaryItemRowMapper.INSTANCE)
                 .execute(Collections.singletonMap("dicId",dicId))
                 .onSuccess(rowset -> {
                     rowset.forEach(dictionaryItem -> {
-                        dictionaryItemList.add(dictionaryItem);
+
+                        dictionaryItemList.add(dictionaryItem.toJson());
                     });
                     promise.complete(dictionaryItemList);
                 }).onFailure(ex ->ex.printStackTrace());
@@ -56,13 +58,13 @@ public class DictionaryDao  extends CrudDao<Tenant> {
      */
     public Future<List<DictionaryItem>> getChild(String itemId){
         Promise promise = Promise.promise();
-        List<DictionaryItem> dictionaryItemList = new ArrayList<>();
-        SqlTemplate.forQuery(sqlClient,"SELECT * FROM Dictionary_Item where parentID =#{itemId}")
+        List<JsonObject> dictionaryItemList = new ArrayList<>();
+        SqlTemplate.forQuery(sqlClient,"SELECT * FROM pub_dic_item where parent_id =#{itemId}")
                 .mapTo(DictionaryItemRowMapper.INSTANCE)
                 .execute(Collections.singletonMap("itemId",itemId))
                 .onSuccess(rowset -> {
                     rowset.forEach(dictionaryItem -> {
-                        dictionaryItemList.add(dictionaryItem);
+                        dictionaryItemList.add(dictionaryItem.toJson());
                     });
                     promise.complete(dictionaryItemList);
                 }).onFailure(ex ->ex.printStackTrace());
@@ -75,32 +77,34 @@ public class DictionaryDao  extends CrudDao<Tenant> {
      */
     public Future<List<DictionaryItem>> getDictionaryItemWithTree(String itemId){
         Promise promise = Promise.promise();
-        List<DictionaryItem> dictionaryItemList = new ArrayList<>();
+        List<JsonObject> dictionaryItemList = new ArrayList<>();
         // 查询本级
-        SqlTemplate.forQuery(sqlClient,"SELECT * FROM Dictionary_Item where id =#{itemId}" +
-                        " and parentID='#' " )
+        SqlTemplate.forQuery(sqlClient,"SELECT id,dic_id,parent_id,path,code,name,seq,tenant_id,create_time,update_time FROM pub_dic_item where id =#{itemId}" +
+                        " and parent_id='#' " )
                 .mapTo(DictionaryItemRowMapper.INSTANCE)
                 .execute(Collections.singletonMap("itemId",itemId))
                 .onSuccess(rowset -> {
                     // 递归 查询下一级及一下
                     rowset.forEach(dictionaryItem -> {
-                        dictionaryItemList.add(dictionaryItem);
+
                         getChildWithTree(dictionaryItemList,dictionaryItem.getId());
+                        dictionaryItemList.add(dictionaryItem.toJson());
                     });
+                    promise.complete(dictionaryItemList);
 
                 }).onFailure(ex ->ex.printStackTrace());
         return promise.future();
     }
 
-    private void getChildWithTree(List<DictionaryItem> dictionaryItemList, String id) {
+    private void getChildWithTree(List<JsonObject> dictionaryItemList, String id) {
         // 查询本级
-        SqlTemplate.forQuery(sqlClient,"SELECT * FROM Dictionary_Item where id =#{itemId}")
+        SqlTemplate.forQuery(sqlClient,"SELECT * FROM pub_dic_item where id =#{itemId}")
                 .mapTo(DictionaryItemRowMapper.INSTANCE)
                 .execute(Collections.singletonMap("itemId",id))
                 .onSuccess(rowset -> {
                     // 递归 查询下一级及一下
                     rowset.forEach(dictionaryItem ->{
-                        dictionaryItemList.add(dictionaryItem);
+                        dictionaryItemList.add(dictionaryItem.toJson());
                      getChildWithTree(dictionaryItemList, dictionaryItem.getId());
                     });
                 }).onFailure(ex ->ex.printStackTrace());

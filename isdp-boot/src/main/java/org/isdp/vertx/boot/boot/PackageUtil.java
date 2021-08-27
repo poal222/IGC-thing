@@ -1,198 +1,151 @@
-/*
- * Copyright (c) 2021. 四川高诚物联网科技有限公司.  All rights reserved.
- * 本软件基于Apache License 2.0
- * 任何单位及个人可以用于修改，分发及商业目的
- */
-
 package org.isdp.vertx.boot.boot;
-
-import ch.qos.logback.core.util.FileUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.net.URLDecoder;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class PackageUtil {
-
-  public static void main(String[] args) throws Exception {
-    String packageName = "org.isdp.vertx";
-    // List<String> classNames = getClassName(packageName);
-    List<String> classNames = getClassName(packageName, true);
-    if (classNames != null) {
-      for (String className : classNames) {
-        System.out.println(className);
-      }
-    }
-  }
-
-  /**
-   * 获取某包下（包括该包的所有子包）所有类
-   *
-   * @param packageName
-   *            包名
-   * @return 类的完整名称
-   */
-  public static List<String> getClassName(String packageName) {
-    return getClassName(packageName, true);
-  }
-
-  /**
-   * 获取某包下所有类
-   *
-   * @param packageName
-   *            包名
-   * @param childPackage
-   *            是否遍历子包
-   * @return 类的完整名称
-   */
-  public static List<String> getClassName(String packageName, boolean childPackage) {
-    List<String> fileNames = null;
-    ClassLoader loader = Thread.currentThread().getContextClassLoader();
-    String packagePath = packageName.replace(".", "/");
+  public static List<Class> getClasses(String packageName) {
+    List<Class> classes = new ArrayList<Class>();
     try {
-      packagePath = java.net.URLDecoder.decode(packagePath,"utf-8"); //解决路径包含中文的情况
-    } catch (UnsupportedEncodingException e) {
+      List<String> classNames = getClassNames(packageName);
+      for (String className : classNames) {
+        Class clazz = Class.forName(className);
+        classes.add(clazz);
+      }
+    } catch (ClassNotFoundException e) {
       e.printStackTrace();
     }
+    return classes;
+  }
 
-    URL url = loader.getResource(packagePath);
-    if (url != null) {
-      String type = url.getProtocol();
-      if (type.equals("file")) {
-        fileNames = getClassNameByFile(url.getPath(), null, childPackage);
-      } else if (type.equals("jar")) {
-        fileNames = getClassNameByJar(url.getPath(), childPackage);
-      }
-    } else {
-      fileNames = getClassNameByJars(((URLClassLoader) loader).getURLs(), packagePath, childPackage);
+  public static List<String> getClassNames(String packageName) {
+    List<String> classNames = new ArrayList<String>();
+    try {
+      Set<String> classNameSet = getClassNames(packageName, true);
+      classNames.addAll(classNameSet);
+      Collections.sort(classNames);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    return classNames;
+  }
+
+  private static Set<String> getClassNames(String packageName, boolean recursive) throws IOException {
+    Set<String> fileNames = new HashSet<String>();
+    ClassLoader loader = Thread.currentThread().getContextClassLoader();
+    String packagePath = packageName.replace(".", "/");
+    Enumeration<URL> urls = loader.getResources(packagePath);
+    while (urls.hasMoreElements()) {
+      URL url = urls.nextElement();
+      if (url != null) {
+        String type = url.getProtocol();
+        if (type.equals("file")) {
+          fileNames.addAll(getClassNameByFile(url.getPath(), packagePath, recursive));
+        } else if (type.equals("jar")) {
+          fileNames.addAll(getClassNameByJar(url.getPath(), recursive));
+        }
+      }
+    }
+    fileNames.addAll(getClassNameByURLs(((URLClassLoader) loader).getURLs(), packagePath, recursive));
     return fileNames;
   }
 
-  /**
-   * 从项目文件获取某包下所有类
-   *
-   * @param filePath
-   *            文件路径
-   * @param className
-   *            类名集合
-   * @param childPackage
-   *            是否遍历子包
-   * @return 类的完整名称
-   */
-  private static List<String> getClassNameByFile(String filePath, List<String> className, boolean childPackage) {
-    List<String> myClassName = new ArrayList<>();
+  private static Set<String> getClassNameByFile(String filePath, String packagePath, boolean recursive) {
+    Set<String> myClassName = new HashSet<String>();
+
     try {
-      filePath = java.net.URLDecoder.decode(filePath,"utf-8"); //解决路径包含中文的情况
+      filePath = URLDecoder.decode(filePath, "UTF-8");
     } catch (UnsupportedEncodingException e) {
       e.printStackTrace();
     }
-    File file = new File(filePath);
-    File[] childFiles = file.listFiles();
+
+    File[] childFiles = new File(filePath).listFiles();
+    if ((childFiles == null) || (childFiles.length <= 0)) {
+      return myClassName;
+    }
+
     for (File childFile : childFiles) {
       if (childFile.isDirectory()) {
-        if (childPackage) {
-          myClassName.addAll(getClassNameByFile(childFile.getPath(), myClassName, childPackage));
+        if (recursive) {
+          myClassName.addAll(getClassNameByFile(childFile.getPath(), packagePath, recursive));
         }
       } else {
         String childFilePath = childFile.getPath();
+        childFilePath = childFilePath.replaceAll("\\\\", "/");
         if (childFilePath.endsWith(".class")) {
-          childFilePath = childFilePath.substring(childFilePath.indexOf("/classes/") + 9,
-                  childFilePath.lastIndexOf("."));
-          childFilePath = childFilePath.replace("/", ".");
-//          childFilePath = childFilePath.substring(childFilePath.indexOf("/classes/") + 9, childFilePath.lastIndexOf("."));
-//          childFilePath = childFilePath.replace("\\", ".");
-          myClassName.add(childFilePath);
+          int begIndex = childFilePath.indexOf(packagePath);
+          int endIndex = childFilePath.lastIndexOf(".");
+          if ((begIndex >= 0) && (endIndex >= 0) && (begIndex < endIndex)) {
+            childFilePath = childFilePath.substring(begIndex, endIndex);
+            childFilePath = childFilePath.replace("/", ".");
+            myClassName.add(childFilePath);
+          }
         }
       }
     }
-
     return myClassName;
   }
 
-  /**
-   * 从jar获取某包下所有类
-   *
-   * @param jarPath
-   *            jar文件路径
-   * @param childPackage
-   *            是否遍历子包
-   * @return 类的完整名称
-   */
-  private static List<String> getClassNameByJar(String jarPath, boolean childPackage) {
-    List<String> myClassName = new ArrayList<>();
+  private static Set<String> getClassNameByJar(String jarPath, boolean recursive) {
+    Set<String> myClassName = new HashSet<String>();
+
+    String[] jarInfo = jarPath.split("!");
+    String jarFilePath = jarInfo[0].substring(jarInfo[0].indexOf("/"));
     try {
-      jarPath = java.net.URLDecoder.decode(jarPath,"utf-8"); //解决路径包含中文的情况
+      jarFilePath = URLDecoder.decode(jarFilePath, "UTF-8");
     } catch (UnsupportedEncodingException e) {
       e.printStackTrace();
     }
-    String[] jarInfo = jarPath.split("!");
-    String jarFilePath = jarInfo[0].substring(jarInfo[0].indexOf("/"));
     String packagePath = jarInfo[1].substring(1);
+
     try {
       JarFile jarFile = new JarFile(jarFilePath);
       Enumeration<JarEntry> entrys = jarFile.entries();
       while (entrys.hasMoreElements()) {
-        JarEntry jarEntry = entrys.nextElement();
-        String entryName = jarEntry.getName();
+        String entryName = entrys.nextElement().getName();
         if (entryName.endsWith(".class")) {
-          if (childPackage) {
+          if (recursive) {
             if (entryName.startsWith(packagePath)) {
-              entryName = entryName.replace("/", ".").substring(0, entryName.lastIndexOf("."));
+              entryName = entryName.replace("/", ".");
+              entryName = entryName.substring(0, entryName.lastIndexOf("."));
               myClassName.add(entryName);
             }
           } else {
             int index = entryName.lastIndexOf("/");
-            String myPackagePath;
-            if (index != -1) {
-              myPackagePath = entryName.substring(0, index);
-            } else {
-              myPackagePath = entryName;
-            }
+            String myPackagePath = (index >= 0) ? entryName.substring(0, index) : entryName;
             if (myPackagePath.equals(packagePath)) {
-              entryName = entryName.replace("/", ".").substring(0, entryName.lastIndexOf("."));
+              entryName = entryName.replace("/", ".");
+              entryName = entryName.substring(0, entryName.lastIndexOf("."));
               myClassName.add(entryName);
             }
           }
         }
       }
-    } catch (Exception e) {
+    } catch (IOException e) {
       e.printStackTrace();
     }
     return myClassName;
   }
 
-  /**
-   * 从所有jar中搜索该包，并获取该包下所有类
-   *
-   * @param urls
-   *            URL集合
-   * @param packagePath
-   *            包路径
-   * @param childPackage
-   *            是否遍历子包
-   * @return 类的完整名称
-   */
-  private static List<String> getClassNameByJars(URL[] urls, String packagePath, boolean childPackage) {
-    List<String> myClassName = new ArrayList<>();
-    if (urls != null) {
-      for (int i = 0; i < urls.length; i++) {
-        URL url = urls[i];
+  private static Set<String> getClassNameByURLs(URL[] urls, String packagePath, boolean recursive) {
+    Set<String> myClassName = new HashSet<String>();
+    if ((urls != null) && (urls.length > 0)) {
+      for (URL url : urls) {
         String urlPath = url.getPath();
-        // 不必搜索classes文件夹
         if (urlPath.endsWith("classes/")) {
           continue;
+        } else if (urlPath.endsWith(".jar")) {
+          myClassName.addAll(getClassNameByJar(urlPath + "!/" + packagePath, recursive));
+        } else {
+          myClassName.addAll(getClassNameByFile(urlPath, packagePath, recursive));
         }
-        String jarPath = urlPath + "!/" + packagePath;
-        myClassName.addAll(getClassNameByJar(jarPath, childPackage));
       }
     }
     return myClassName;

@@ -34,7 +34,7 @@ public class VerticleLoader {
   private VerticleLoader(String[] deployPaths, Vertx vertx, JsonObject config) {
     Arrays.stream(deployPaths)
             .forEach(paths ->{
-              List<String> classNames = PackageUtil.getClassName(paths, true);
+              List<String> classNames = PackageUtil.getClassNames(paths);
               if (classNames != null) {
                 for (String className : classNames) {
                   // 加载deploy
