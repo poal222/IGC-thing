@@ -3,8 +3,6 @@ package org.isdp.vertx.common.model;
 import io.vertx.core.json.JsonObject;
 import io.vertx.sqlclient.templates.annotations.Column;
 
-import java.util.Date;
-
 public abstract class  BaseModel<Pk> {
 
 
@@ -12,39 +10,47 @@ public abstract class  BaseModel<Pk> {
      * 租户ID
      */
     @Column(name = "tenant_id")
-    private String tenantId;
+    public String tenantId;
 
     @Column(name = "id")
-    public Pk Id;
+    public String id;
 
     @Column(name = "create_time")
-    public Date createTime;
+    public String createTime;
 
     @Column(name = "update_time")
-    public Date updateTime;
+    public String updateTime;
 
-    public Pk getId() {
-        return Id;
+    public String getId() {
+        return id;
     }
 
-    public void setId(Pk id) {
-        Id = id;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public String getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
+    public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     public abstract JsonObject toJson();

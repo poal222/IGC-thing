@@ -3,6 +3,7 @@ package org.isdp.vertx.tenant.dao;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.json.JsonObject;
+import io.vertx.sqlclient.RowSet;
 import io.vertx.sqlclient.SqlClient;
 import io.vertx.sqlclient.templates.SqlTemplate;
 import org.isdp.vertx.common.dao.CrudDao;
@@ -38,7 +39,7 @@ public class DictionaryDao  extends CrudDao<Tenant> {
     public Future<List<DictionaryItem>> getTopDictionaryItem(String dicId){
         Promise promise = Promise.promise();
         List<JsonObject> dictionaryItemList = new ArrayList<>();
-        SqlTemplate.forQuery(sqlClient,"SELECT * FROM pub_dic_item where dic_id =#{dicId}" +
+        SqlTemplate.forQuery(sqlClient,"SELECT id,dic_id,parent_id,path,code,name,seq,tenant_id,create_time,update_time FROM pub_dic_item where dic_id =#{dicId}" +
                 " and parentID='#' " )
                 .mapTo(DictionaryItemRowMapper.INSTANCE)
                 .execute(Collections.singletonMap("dicId",dicId))
@@ -59,7 +60,7 @@ public class DictionaryDao  extends CrudDao<Tenant> {
     public Future<List<DictionaryItem>> getChild(String itemId){
         Promise promise = Promise.promise();
         List<JsonObject> dictionaryItemList = new ArrayList<>();
-        SqlTemplate.forQuery(sqlClient,"SELECT * FROM pub_dic_item where parent_id =#{itemId}")
+        SqlTemplate.forQuery(sqlClient,"SELECT id,dic_id,parent_id,path,code,name,seq,tenant_id,create_time,update_time FROM pub_dic_item where parent_id =#{itemId}")
                 .mapTo(DictionaryItemRowMapper.INSTANCE)
                 .execute(Collections.singletonMap("itemId",itemId))
                 .onSuccess(rowset -> {
@@ -75,38 +76,41 @@ public class DictionaryDao  extends CrudDao<Tenant> {
      * @param itemId 字典项id
      * @return
      */
-    public Future<List<DictionaryItem>> getDictionaryItemWithTree(String itemId){
+    public Future<JsonObject> getDictionaryItemWithTree(String itemId){
         Promise promise = Promise.promise();
-        List<JsonObject> dictionaryItemList = new ArrayList<>();
         // 查询本级
-        SqlTemplate.forQuery(sqlClient,"SELECT id,dic_id,parent_id,path,code,name,seq,tenant_id,create_time,update_time FROM pub_dic_item where id =#{itemId}" +
-                        " and parent_id='#' " )
+        SqlTemplate.forQuery(sqlClient,"SELECT id,dic_id,parent_id,path,code,name,seq,tenant_id,create_time,update_time FROM pub_dic_item where id =#{itemId}" )
                 .mapTo(DictionaryItemRowMapper.INSTANCE)
                 .execute(Collections.singletonMap("itemId",itemId))
                 .onSuccess(rowset -> {
-                    // 递归 查询下一级及一下
                     rowset.forEach(dictionaryItem -> {
+                        getChildWithTree(dictionaryItem,promise);
 
-                        getChildWithTree(dictionaryItemList,dictionaryItem.getId());
-                        dictionaryItemList.add(dictionaryItem.toJson());
+
                     });
-                    promise.complete(dictionaryItemList);
+
 
                 }).onFailure(ex ->ex.printStackTrace());
         return promise.future();
     }
 
-    private void getChildWithTree(List<JsonObject> dictionaryItemList, String id) {
+
+    private void getChildWithTree(DictionaryItem dictionaryItem, Promise promise) {
         // 查询本级
-        SqlTemplate.forQuery(sqlClient,"SELECT * FROM pub_dic_item where id =#{itemId}")
+        SqlTemplate.forQuery(sqlClient,"SELECT id,dic_id,parent_id,path,code,name,seq,tenant_id,create_time,update_time FROM pub_dic_item where parent_id =#{itemId}")
                 .mapTo(DictionaryItemRowMapper.INSTANCE)
-                .execute(Collections.singletonMap("itemId",id))
+                .execute(Collections.singletonMap("itemId",dictionaryItem.getId()))
                 .onSuccess(rowset -> {
                     // 递归 查询下一级及一下
-                    rowset.forEach(dictionaryItem ->{
-                        dictionaryItemList.add(dictionaryItem.toJson());
-                     getChildWithTree(dictionaryItemList, dictionaryItem.getId());
+                    rowset.forEach(dictionaryItem1 ->{
+                        dictionaryItem.getChildren().add(dictionaryItem1.toJson());
+                        getChildWithTree(dictionaryItem1,promise);
+
+
                     });
+                    promise.complete(dictionaryItem.toJson());
+
                 }).onFailure(ex ->ex.printStackTrace());
     }
+
 }

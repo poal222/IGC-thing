@@ -6,6 +6,9 @@ import io.vertx.sqlclient.templates.annotations.Column;
 import io.vertx.sqlclient.templates.annotations.RowMapped;
 import org.isdp.vertx.common.model.BaseModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 数据字典内容 实体类
  *
@@ -18,7 +21,7 @@ public class DictionaryItem extends BaseModel<String> {
      * 所属字典
      */
     @Column(name = "dic_id")
-    private String DicID;
+    private String dicId;
     /**
      * 编码
      */
@@ -47,12 +50,24 @@ public class DictionaryItem extends BaseModel<String> {
     @Column(name = "seq")
     private Integer seq;
 
-    public String getDicID() {
-        return DicID;
+
+
+    private List<JsonObject> children = new ArrayList<>();
+
+    public List<JsonObject> getChildren() {
+        return children;
     }
 
-    public void setDicID(String dicID) {
-        DicID = dicID;
+    public void setChildren(List<JsonObject> children) {
+        this.children = children;
+    }
+
+    public String getDicId() {
+        return dicId;
+    }
+
+    public void setDicId(String dicId) {
+        this.dicId = dicId;
     }
 
     public String getCode() {

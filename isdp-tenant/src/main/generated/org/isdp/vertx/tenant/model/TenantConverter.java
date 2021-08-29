@@ -21,9 +21,19 @@ public class TenantConverter {
             obj.setCode((String)member.getValue());
           }
           break;
+        case "createTime":
+          if (member.getValue() instanceof String) {
+            obj.setCreateTime((String)member.getValue());
+          }
+          break;
         case "expired":
           if (member.getValue() instanceof String) {
             obj.setExpired((String)member.getValue());
+          }
+          break;
+        case "id":
+          if (member.getValue() instanceof String) {
+            obj.setId((String)member.getValue());
           }
           break;
         case "name":
@@ -31,9 +41,19 @@ public class TenantConverter {
             obj.setName((String)member.getValue());
           }
           break;
+        case "tenantId":
+          if (member.getValue() instanceof String) {
+            obj.setTenantId((String)member.getValue());
+          }
+          break;
         case "type":
           if (member.getValue() instanceof String) {
             obj.setType((String)member.getValue());
+          }
+          break;
+        case "updateTime":
+          if (member.getValue() instanceof String) {
+            obj.setUpdateTime((String)member.getValue());
           }
           break;
       }
@@ -48,14 +68,26 @@ public class TenantConverter {
     if (obj.getCode() != null) {
       json.put("code", obj.getCode());
     }
+    if (obj.getCreateTime() != null) {
+      json.put("createTime", obj.getCreateTime());
+    }
     if (obj.getExpired() != null) {
       json.put("expired", obj.getExpired());
+    }
+    if (obj.getId() != null) {
+      json.put("id", obj.getId());
     }
     if (obj.getName() != null) {
       json.put("name", obj.getName());
     }
+    if (obj.getTenantId() != null) {
+      json.put("tenantId", obj.getTenantId());
+    }
     if (obj.getType() != null) {
       json.put("type", obj.getType());
+    }
+    if (obj.getUpdateTime() != null) {
+      json.put("updateTime", obj.getUpdateTime());
     }
   }
 }

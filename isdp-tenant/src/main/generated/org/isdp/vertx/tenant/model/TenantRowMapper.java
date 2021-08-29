@@ -21,20 +21,26 @@ public interface TenantRowMapper extends io.vertx.sqlclient.templates.RowMapper<
     if ((idx = row.getColumnIndex("code")) != -1 && (val = row.getString(idx)) != null) {
       obj.setCode((java.lang.String)val);
     }
-    if ((idx = row.getColumnIndex("createTime")) != -1 && (val = row.get(java.util.Date.class, idx)) != null) {
-      obj.setCreateTime((java.util.Date)val);
+    if ((idx = row.getColumnIndex("createTime")) != -1 && (val = row.getString(idx)) != null) {
+      obj.setCreateTime((java.lang.String)val);
     }
     if ((idx = row.getColumnIndex("expired")) != -1 && (val = row.getString(idx)) != null) {
       obj.setExpired((java.lang.String)val);
     }
+    if ((idx = row.getColumnIndex("id")) != -1 && (val = row.getString(idx)) != null) {
+      obj.setId((java.lang.String)val);
+    }
     if ((idx = row.getColumnIndex("name")) != -1 && (val = row.getString(idx)) != null) {
       obj.setName((java.lang.String)val);
+    }
+    if ((idx = row.getColumnIndex("tenantId")) != -1 && (val = row.getString(idx)) != null) {
+      obj.setTenantId((java.lang.String)val);
     }
     if ((idx = row.getColumnIndex("type")) != -1 && (val = row.getString(idx)) != null) {
       obj.setType((java.lang.String)val);
     }
-    if ((idx = row.getColumnIndex("updateTime")) != -1 && (val = row.get(java.util.Date.class, idx)) != null) {
-      obj.setUpdateTime((java.util.Date)val);
+    if ((idx = row.getColumnIndex("updateTime")) != -1 && (val = row.getString(idx)) != null) {
+      obj.setUpdateTime((java.lang.String)val);
     }
     return obj;
   }

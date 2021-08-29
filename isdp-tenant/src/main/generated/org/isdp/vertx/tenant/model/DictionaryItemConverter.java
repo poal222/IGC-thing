@@ -16,14 +16,34 @@ public class DictionaryItemConverter {
   public static void fromJson(Iterable<java.util.Map.Entry<String, Object>> json, DictionaryItem obj) {
     for (java.util.Map.Entry<String, Object> member : json) {
       switch (member.getKey()) {
+        case "children":
+          if (member.getValue() instanceof JsonArray) {
+            java.util.ArrayList<io.vertx.core.json.JsonObject> list =  new java.util.ArrayList<>();
+            ((Iterable<Object>)member.getValue()).forEach( item -> {
+              if (item instanceof JsonObject)
+                list.add(((JsonObject)item).copy());
+            });
+            obj.setChildren(list);
+          }
+          break;
         case "code":
           if (member.getValue() instanceof String) {
             obj.setCode((String)member.getValue());
           }
           break;
-        case "dicID":
+        case "createTime":
           if (member.getValue() instanceof String) {
-            obj.setDicID((String)member.getValue());
+            obj.setCreateTime((String)member.getValue());
+          }
+          break;
+        case "dicId":
+          if (member.getValue() instanceof String) {
+            obj.setDicId((String)member.getValue());
+          }
+          break;
+        case "id":
+          if (member.getValue() instanceof String) {
+            obj.setId((String)member.getValue());
           }
           break;
         case "name":
@@ -46,6 +66,16 @@ public class DictionaryItemConverter {
             obj.setSeq(((Number)member.getValue()).intValue());
           }
           break;
+        case "tenantId":
+          if (member.getValue() instanceof String) {
+            obj.setTenantId((String)member.getValue());
+          }
+          break;
+        case "updateTime":
+          if (member.getValue() instanceof String) {
+            obj.setUpdateTime((String)member.getValue());
+          }
+          break;
       }
     }
   }
@@ -55,11 +85,22 @@ public class DictionaryItemConverter {
   }
 
   public static void toJson(DictionaryItem obj, java.util.Map<String, Object> json) {
+    if (obj.getChildren() != null) {
+      JsonArray array = new JsonArray();
+      obj.getChildren().forEach(item -> array.add(item));
+      json.put("children", array);
+    }
     if (obj.getCode() != null) {
       json.put("code", obj.getCode());
     }
-    if (obj.getDicID() != null) {
-      json.put("dicID", obj.getDicID());
+    if (obj.getCreateTime() != null) {
+      json.put("createTime", obj.getCreateTime());
+    }
+    if (obj.getDicId() != null) {
+      json.put("dicId", obj.getDicId());
+    }
+    if (obj.getId() != null) {
+      json.put("id", obj.getId());
     }
     if (obj.getName() != null) {
       json.put("name", obj.getName());
@@ -72,6 +113,12 @@ public class DictionaryItemConverter {
     }
     if (obj.getSeq() != null) {
       json.put("seq", obj.getSeq());
+    }
+    if (obj.getTenantId() != null) {
+      json.put("tenantId", obj.getTenantId());
+    }
+    if (obj.getUpdateTime() != null) {
+      json.put("updateTime", obj.getUpdateTime());
     }
   }
 }
