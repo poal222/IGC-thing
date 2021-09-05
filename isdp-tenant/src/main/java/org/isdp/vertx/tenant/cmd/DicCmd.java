@@ -27,11 +27,11 @@ public class DicCmd extends CrudCmd {
         if(itemId == null)error(routingContext,new RuntimeException("itemId is not null!"));
         dicService.dictionaryDao.getDictionaryItemWithTree(itemId)
                 .onSuccess(list->{
-                    System.out.println(list);
                     successfulled(routingContext,list);
                 })
                 .onFailure(ex -> ex.printStackTrace())
         ;
+
     }
 
     @Override

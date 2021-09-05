@@ -8,6 +8,7 @@ package org.isdp.vertx.datasource;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.tracing.TracingPolicy;
 import io.vertx.ext.mongo.MongoClient;
 import io.vertx.mysqlclient.MySQLConnectOptions;
 import io.vertx.mysqlclient.MySQLPool;
@@ -49,7 +50,9 @@ public  class DataSourceProvider {
   }
 
   private MySQLConnectOptions getMysqlOptions(JsonObject config) {
-      return new MySQLConnectOptions(config);
+       MySQLConnectOptions mySQLConnectOptions =  new MySQLConnectOptions(config);
+      mySQLConnectOptions.setTracingPolicy(TracingPolicy.ALWAYS);
+      return mySQLConnectOptions;
   }
   private PoolOptions getpoolOptions(JsonObject config) {
    return new PoolOptions(config);

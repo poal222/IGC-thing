@@ -3,7 +3,6 @@ package org.isdp.vertx.tenant.dao;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
 import io.vertx.core.json.JsonObject;
-import io.vertx.sqlclient.RowSet;
 import io.vertx.sqlclient.SqlClient;
 import io.vertx.sqlclient.templates.SqlTemplate;
 import org.isdp.vertx.common.dao.CrudDao;
@@ -29,6 +28,9 @@ public class DictionaryDao  extends CrudDao<Tenant> {
     public DictionaryDao(SqlClient sqlClient) {
         super(sqlClient);
     }
+
+
+    private static JsonObject treeJsonObject = new JsonObject();
 
 
     /**
@@ -83,34 +85,76 @@ public class DictionaryDao  extends CrudDao<Tenant> {
                 .mapTo(DictionaryItemRowMapper.INSTANCE)
                 .execute(Collections.singletonMap("itemId",itemId))
                 .onSuccess(rowset -> {
+                   if(rowset.size()==0){
+                       promise.complete();
+                   }
                     rowset.forEach(dictionaryItem -> {
-                        getChildWithTree(dictionaryItem,promise);
+//                        getChilds(dictionaryItem,promise);
 
+                        revices(dictionaryItem,promise);
 
                     });
-
 
                 }).onFailure(ex ->ex.printStackTrace());
         return promise.future();
     }
 
+    /**
+     * 查询下一级
+     * @param dictionaryItem
+     * @return
+     */
+    private void revices(DictionaryItem dictionaryItem,Promise promise){
+        selfAndChild(dictionaryItem,promise);
+//        promise.complete( selfAndChild(dictionaryItem).result());
+//        promise.tryComplete(promise1.future().result());
+    }
 
-    private void getChildWithTree(DictionaryItem dictionaryItem, Promise promise) {
-        // 查询本级
+    private synchronized Future<DictionaryItem> selfAndChild(DictionaryItem dictionaryItem, Promise promise1){
+        Promise<DictionaryItem> promise = Promise.promise();
+        // 查询下级
         SqlTemplate.forQuery(sqlClient,"SELECT id,dic_id,parent_id,path,code,name,seq,tenant_id,create_time,update_time FROM pub_dic_item where parent_id =#{itemId}")
                 .mapTo(DictionaryItemRowMapper.INSTANCE)
                 .execute(Collections.singletonMap("itemId",dictionaryItem.getId()))
-                .onSuccess(rowset -> {
-                    // 递归 查询下一级及一下
-                    rowset.forEach(dictionaryItem1 ->{
-                        dictionaryItem.getChildren().add(dictionaryItem1.toJson());
-                        getChildWithTree(dictionaryItem1,promise);
-
-
-                    });
-                    promise.complete(dictionaryItem.toJson());
-
-                }).onFailure(ex ->ex.printStackTrace());
+                .onSuccess(rs ->{
+                    if(rs.size()==0){
+                        System.out.println("sdsd");
+                        promise.tryComplete(dictionaryItem);
+                    }else {
+                     rs.forEach(dictionaryItem1 ->{
+                               System.out.println("dictionaryItem1="+dictionaryItem1);
+                               selfAndChild(dictionaryItem1, promise).onSuccess(d->{
+                                   dictionaryItem.getChildren().add(dictionaryItem1.toJson());
+                                   System.out.println("ssdsd"+dictionaryItem.toJson());
+                                   promise.tryComplete(dictionaryItem);
+                                   promise1.complete(dictionaryItem.toJson());
+                               });
+                       });
+                    }
+                });
+        return promise.future();
     }
 
+//    private void getChilds(DictionaryItem dictionaryItem,Promise promise) {
+//
+//        // 查询本级
+//        SqlTemplate.forQuery(sqlClient,"SELECT id,dic_id,parent_id,path,code,name,seq,tenant_id,create_time,update_time FROM pub_dic_item where parent_id =#{itemId}")
+//                .mapTo(DictionaryItemRowMapper.INSTANCE)
+//                .execute(Collections.singletonMap("itemId",dictionaryItem.getId()))
+//                .onSuccess(rowset -> {
+//                    //如果 没有下级，则终止
+//                    if(rowset.size() == 0 ){
+//                        promise.tryComplete(dictionaryItem.toJson());
+//                    }else{
+//                        // 递归 查询下一级及一下
+//                        rowset.forEach(dictionaryItem1 -> {
+//                            dictionaryItem.getChildren().add(dictionaryItem1.toJson());
+//                            getChilds(dictionaryItem1,promise);
+//                        });
+//                        promise.tryComplete(dictionaryItem.toJson());
+//                    }
+//                }).onFailure(ex ->ex.printStackTrace());
+//    }
 }
+
+

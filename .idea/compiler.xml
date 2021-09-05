@@ -6,12 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="isdp-boot" />
-        <module name="isdp-cluster" />
         <module name="isdp-mqtt" />
+        <module name="isdp-cluster" />
+        <module name="main" />
         <module name="isdp-gateway" />
         <module name="isdp-cache" />
-        <module name="main" />
+        <module name="isdp-boot" />
       </profile>
       <profile name="Annotation profile for isdp-common" enabled="true">
         <sourceOutputDir name="src/main/generated" />

@@ -2,7 +2,11 @@ GET http://localhost:8080/v1/isdp-auth/isdp/saas/dic/_queryWithTree/12
 Content-Type: application/json
 
 {}
+###
+GET http://localhost:8081/isdp/saas/dic/_queryWithTree/12
+Content-Type: application/json
 
+{}
 ###
 POST http://localhost:8080/v1/isdp-auth/isdp/saas/dic/_insert
 Content-Type: application/json
